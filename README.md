@@ -3,7 +3,7 @@
 型をえらんで書きかえるだけ。自分だけのアプリがその場で動き、リンクひとつで人に渡せる。
 将来は「自作アプリの作成プラットフォーム」にしていくための、最初の一歩(作れる体験)。
 
-公開先: (まだ。`../site-factory/publish.sh jibun-app-kobo` で https://before-ai.github.io/jibun-app-kobo/ に出る)
+公開先: https://before-ai.github.io/jibun-app-kobo/ (GitHub Pages、main の docs/ を配信。push すると1〜2分で反映)
 
 ## 動かす
 
