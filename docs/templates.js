@@ -113,7 +113,7 @@
   // このページがなくても単体で動く HTML
   function standaloneHtml(cfg) {
     const { runApp, APP_CSS } = window.JibunRuntime;
-    const json = JSON.stringify(cfg).replace(/<\//g, "<\\/");
+    const json = JSON.stringify(cfg).replace(/</g, "\\u003c"); // < をすべて逃がす(閉じタグだけでなく、コメントの始まりでも HTML の読み取りが崩れるため)
     return `<!doctype html>
 <html lang="ja">
 <head>

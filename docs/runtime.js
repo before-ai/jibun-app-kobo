@@ -264,7 +264,7 @@ function runApp(config, root, storeKey) {
         if (left <= 0) left = total;
         running = true;
         const end = Date.now() + left * 1000;
-        tick = setInterval(() => { left = Math.max(0, Math.round((end - Date.now()) / 1000)); if (left === 0) { stop(); beep(); } update(); }, 250);
+        tick = setInterval(() => { left = Math.max(0, Math.ceil((end - Date.now()) / 1000)); if (left === 0) { stop(); beep(); } update(); }, 250);
         update();
       }
       const startBtn = h("button", { class: "app-btn", onclick: () => { if (running) { stop(); update(); } else { unlockAudio(); start(); } } });

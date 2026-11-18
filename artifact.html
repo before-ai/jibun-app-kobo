@@ -428,7 +428,7 @@
           if (left <= 0) left = total;
           running = true;
           const end = Date.now() + left * 1000;
-          tick = setInterval(() => { left = Math.max(0, Math.round((end - Date.now()) / 1000)); if (left === 0) { stop(); beep(); } update(); }, 250);
+          tick = setInterval(() => { left = Math.max(0, Math.ceil((end - Date.now()) / 1000)); if (left === 0) { stop(); beep(); } update(); }, 250);
           update();
         }
         const startBtn = h("button", { class: "app-btn", onclick: () => { if (running) { stop(); update(); } else { unlockAudio(); start(); } } });
@@ -652,7 +652,7 @@
     } catch { return null; }
   }
   function standaloneHtml(cfg) {
-    const json = JSON.stringify(cfg).replace(/<\//g, "<\\/");
+    const json = JSON.stringify(cfg).replace(/</g, "\\u003c"); // < をすべて逃がす(閉じタグだけでなく、コメントの始まりでも HTML の読み取りが崩れるため)
     return `<!doctype html>
 <html lang="ja">
 <head>
