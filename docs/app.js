@@ -1,44 +1,36 @@
-// じぶんアプリ工房 の画面の動き。ビルド不要、このファイルを書き換えるだけ。
+// アプリページ: リンクの # に入った共有コードからアプリを組み立てて、そのまま使えるようにする
+(function () {
+  const { decode, remixUrl, el } = window.Jibun;
+  const { runApp } = window.JibunRuntime;
 
-// 端末内保存(ユーザーのデータはサーバーに送らない)
-const store = {
-  key: "jibun-app-kobo:v1",
-  load() { try { return JSON.parse(localStorage.getItem(this.key)) ?? {}; } catch { return {}; } },
-  save(obj) { try { localStorage.setItem(this.key, JSON.stringify(obj)); } catch {} },
-};
-
-// 固定データは docs/data/*.json に置き、ここで読む
-async function loadData(name) {
-  const res = await fetch(`data/${name}.json`, { cache: "no-cache" });
-  if (!res.ok) throw new Error(`${name}.json を読めません (${res.status})`);
-  return res.json();
-}
-
-function el(tag, attrs = {}, ...children) {
-  const node = document.createElement(tag);
-  for (const [k, v] of Object.entries(attrs)) {
-    if (k === "class") node.className = v;
-    else if (k.startsWith("on")) node.addEventListener(k.slice(2), v);
-    else node.setAttribute(k, v);
+  // 同じリンクなら同じ保存先になるよう、コードの文字列から鍵を作る
+  function keyOf(code) {
+    let h = 5381;
+    for (let i = 0; i < code.length; i++) h = ((h << 5) + h + code.charCodeAt(i)) | 0;
+    return `jibun-app:link-${(h >>> 0).toString(36)}`;
   }
-  node.append(...children);
-  return node;
-}
 
-async function render() {
-  const app = document.getElementById("app");
-  app.replaceChildren();
-  const state = store.load();
-  const data = await loadData("sample");
-  app.append(
-    el("p", {}, `サンプルデータ: ${data.items.length} 件`),
-    el("ul", { class: "list" }, ...data.items.map((it) => el("li", {}, it.name))),
-    el("button", { onclick: () => { state.clicks = (state.clicks ?? 0) + 1; store.save(state); render(); } },
-      `保存のテスト(${state.clicks ?? 0} 回)`),
-  );
-}
+  function showMissing() {
+    document.getElementById("stage").replaceChildren(
+      el("div", { class: "viewer-missing" },
+        el("h2", {}, "アプリが見つかりません"),
+        el("p", { class: "muted" }, "このリンクにはアプリの中身が入っていないようです。リンクが途中で切れていないか確かめるか、工房で新しく作ってください。"),
+        el("a", { class: "btn", href: "make.html" }, "工房で作る"),
+      ),
+    );
+    document.getElementById("remix").hidden = true;
+  }
 
-document.getElementById("updated").textContent = "更新: 2026-11-06";
-render().catch((e) => {
-  document.getElementById("app").textContent = `読み込みに失敗しました: ${e.message}`;
-});
+  function boot() {
+    const code = decodeURIComponent(location.hash.slice(1));
+    const cfg = code.startsWith("JA1.") ? decode(code) : null;
+    if (!cfg) { showMissing(); return; }
+    document.title = cfg.name || "じぶんアプリ";
+    document.getElementById("themeColor").setAttribute("content", cfg.color || "#e4562e");
+    document.getElementById("remix").href = remixUrl(cfg);
+    runApp(cfg, document.getElementById("app"), keyOf(code));
+  }
+
+  window.addEventListener("hashchange", () => location.reload());
+  boot();
+})();

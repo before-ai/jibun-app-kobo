@@ -1,9 +1,9 @@
 {
   "name": "じぶんアプリ工房",
-  "short_name": "じぶんアプリ工房",
+  "short_name": "アプリ工房",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#f7f8fa",
-  "theme_color": "#0e5a8a",
+  "background_color": "#ffffff",
+  "theme_color": "#f57f31",
   "lang": "ja"
 }

@@ -7,28 +7,276 @@
 <meta name="description" content="型をえらんで書きかえるだけ。自分だけのアプリがその場で動き、リンクひとつで人に渡せる。">
 <meta property="og:title" content="じぶんアプリ工房">
 <meta property="og:description" content="型をえらんで書きかえるだけ。自分だけのアプリがその場で動き、リンクひとつで人に渡せる。">
-<meta name="theme-color" content="#0e5a8a">
+<meta name="theme-color" content="#f57f31">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Maru+Gothic:wght@700&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
-<header class="top">
-  <h1>じぶんアプリ工房</h1>
-  <p class="lead">型をえらんで書きかえるだけ。自分だけのアプリがその場で動き、リンクひとつで人に渡せる。</p>
+<body class="page">
+
+<header class="nav">
+  <div class="inner">
+    <a class="logo" href="./" aria-label="じぶんアプリ工房 トップへ">
+      <svg class="logo-svg" viewBox="0 0 120 120" aria-hidden="true"><circle class="ray" cx="60" cy="60" r="55" stroke-width="7" stroke-dasharray="2 8.36"/><circle class="base" cx="60" cy="60" r="47"/><path d="M51 40l9-8 9 8v9H51z" fill="var(--logo-ink)"/><text x="60" y="66" text-anchor="middle" font-size="16">じぶん</text><text x="60" y="82" text-anchor="middle" font-size="14">アプリ工房</text><text class="since" x="60" y="95" text-anchor="middle">SINCE 2026</text></svg>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="./" aria-current="page">トップページ</a>
+      <a href="#why">こんなとき</a>
+      <a href="#how">使い方</a>
+      <a href="#types">型</a>
+      <a href="#gallery">作品例</a>
+      <a href="#faq">よくあるご質問</a>
+      <a class="btn sm" href="make.html">作ってみる</a>
+    </nav>
+    <a class="btn dark sm" href="make.html">無料で作ってみる</a>
+    <button class="menu" id="menuBtn" aria-label="メニュー" aria-expanded="false" aria-controls="navLinks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
 </header>
 
-<main class="layout">
-  <section class="panel">
-    <h2>ここに本体</h2>
-    <p class="muted">docs/app.js の <code>render()</code> を書き換えると、この中身が変わります。</p>
-    <div id="app"></div>
-  </section>
-</main>
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">プログラミング不要・無料・登録なし</span>
+      <h1>アプリは、<br>えらんで、<br><em>書きかえる</em>だけ。</h1>
+      <p class="lead">チェックリスト、計算機、くじ引き。「こんな小さなアプリが欲しい」を、型をえらんで名前と中身を書きかえるだけで形にします。できたアプリはリンクひとつで家族や仲間に渡せます。</p>
+      <div class="hero-actions">
+        <a class="btn" href="make.html">作ってみる</a>
+        <a class="more" href="#gallery">作品例を見る<span class="arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></a>
+      </div>
+      <p class="hero-note">このスマホ画面は本物です。触ってみてください。</p>
+    </div>
+    <div class="hero-visual">
+      <div class="blob"></div><i class="dot d1"></i><i class="dot d2"></i><i class="dot d3"></i>
+      <div class="phone"><div class="screen"><div id="demo" class="app-root"></div></div></div>
+      <div class="seg" id="demoSeg" role="tablist" aria-label="見本アプリを切り替え"></div>
+    </div>
+  </div>
+  <a class="scroll-down" href="#about" aria-label="下へ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
+</section>
+
+<section class="band" id="about">
+  <div class="wrap">
+    <p class="band-lead">
+      「持ち物リスト」「割り勘」「今晩のおかず」。<br>
+      欲しいのは、<b>自分の暮らしにちょうど合う小さなアプリ</b>。<br>
+      じぶんアプリ工房は、型をえらんで<b>名前と中身を書きかえるだけ</b>で、<br>
+      その場で動くアプリができて、<b>リンクひとつで渡せる</b>場所です。
+    </p>
+    <div class="dl-card">
+      <div class="dl-logo"><svg class="logo-svg" viewBox="0 0 120 120" aria-hidden="true"><circle class="ray" cx="60" cy="60" r="55" stroke-width="7" stroke-dasharray="2 8.36"/><circle class="base" cx="60" cy="60" r="47"/><path d="M51 40l9-8 9 8v9H51z" fill="var(--logo-ink)"/><text x="60" y="66" text-anchor="middle" font-size="16">じぶん</text><text x="60" y="82" text-anchor="middle" font-size="14">アプリ工房</text><text class="since" x="60" y="95" text-anchor="middle">SINCE 2026</text></svg></div>
+      <h3>インストールも登録もいりません</h3>
+      <p>ブラウザで開いて、そのまま作れます。作ったものはあなたの端末の中にだけ残り、このサイトには送られません。</p>
+      <div class="dl-actions">
+        <a class="btn" href="make.html">工房をひらく</a>
+        <a class="btn white" href="#how">使い方を見る<span class="arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section worries" id="why">
+  <div class="wrap worries-grid">
+    <div class="worries-list">
+      <p class="intro">スマホには何百万本もアプリがあるのに、「自分のこれ」にぴったりのものは、なぜか見つからない。欲しいものは小さくて単純なのに、作るとなると急に遠くなる。そんな「欲しい」と「作れる」のあいだにある困りごとです。</p>
+      <article class="worry">
+        <div class="art" aria-hidden="true">
+          <svg viewBox="0 0 200 200"><rect x="60" y="20" width="80" height="160" rx="16" fill="#fff" stroke="#333" stroke-width="3"/><rect x="72" y="44" width="16" height="16" rx="4" fill="#ddd"/><rect x="92" y="44" width="16" height="16" rx="4" fill="#ddd"/><rect x="112" y="44" width="16" height="16" rx="4" fill="#ddd"/><rect x="72" y="66" width="16" height="16" rx="4" fill="#ddd"/><rect x="92" y="66" width="16" height="16" rx="4" fill="#ddd"/><rect x="112" y="66" width="16" height="16" rx="4" fill="#ddd"/><rect x="72" y="88" width="16" height="16" rx="4" fill="#ddd"/><rect x="92" y="88" width="16" height="16" rx="4" fill="#ddd"/><rect x="112" y="88" width="16" height="16" rx="4" fill="#ddd"/><rect x="72" y="110" width="16" height="16" rx="4" fill="#ddd"/><rect x="92" y="110" width="16" height="16" rx="4" fill="#ddd"/><circle cx="150" cy="60" r="26" fill="#f57f31"/><text x="150" y="70" text-anchor="middle" font-size="28" font-weight="900" fill="#fff">?</text><circle cx="40" cy="140" r="8" fill="#ffb784"/><circle cx="30" cy="60" r="5" fill="#ffb784"/></svg>
+        </div>
+        <div>
+          <h3>ちょうどいい<em>アプリ</em>が<br>見つからない</h3>
+          <p>探せば似たものはあるけれど、機能が多すぎたり、広告が出たり、登録を求められたり。「うちの釣りの持ち物」「店の開店前の手順」みたいに、欲しいものはもっと小さくて自分向けなのに。</p>
+        </div>
+      </article>
+      <article class="worry">
+        <div class="art" aria-hidden="true">
+          <svg viewBox="0 0 200 200"><rect x="24" y="40" width="152" height="110" rx="12" fill="#fff" stroke="#333" stroke-width="3"/><circle cx="40" cy="54" r="4" fill="#f57f31"/><circle cx="52" cy="54" r="4" fill="#ddd"/><circle cx="64" cy="54" r="4" fill="#ddd"/><rect x="40" y="74" width="60" height="8" rx="4" fill="#ddd"/><rect x="52" y="90" width="90" height="8" rx="4" fill="#ddd"/><rect x="52" y="106" width="50" height="8" rx="4" fill="#ddd"/><rect x="40" y="122" width="76" height="8" rx="4" fill="#ddd"/><path d="M60 158h80" stroke="#333" stroke-width="3" stroke-linecap="round"/><circle cx="156" cy="40" r="24" fill="#f57f31"/><text x="156" y="49" text-anchor="middle" font-size="26" font-weight="900" fill="#fff">×</text><path d="M120 70c6 0 8-6 8-6s2 6 8 6" stroke="#f57f31" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <h3>作りたいけど、<br><em>プログラミング</em>は無理</h3>
+          <p>やってみようと調べると、環境の用意、言語、公開の手順。たどり着く前に休日が終わります。書きたいのはアプリの「名前」と「項目」だけなのに、コードを1行も書かずに済む道がありませんでした。</p>
+        </div>
+      </article>
+      <article class="worry">
+        <div class="art" aria-hidden="true">
+          <svg viewBox="0 0 200 200"><rect x="20" y="50" width="56" height="110" rx="12" fill="#fff" stroke="#333" stroke-width="3"/><rect x="124" y="50" width="56" height="110" rx="12" fill="#fff" stroke="#333" stroke-width="3"/><rect x="30" y="66" width="36" height="30" rx="6" fill="#f57f31"/><rect x="30" y="102" width="36" height="6" rx="3" fill="#ddd"/><rect x="30" y="114" width="26" height="6" rx="3" fill="#ddd"/><rect x="134" y="66" width="36" height="30" rx="6" fill="#ffd2b3"/><rect x="134" y="102" width="36" height="6" rx="3" fill="#ddd"/><rect x="134" y="114" width="26" height="6" rx="3" fill="#ddd"/><path d="M84 104h30" stroke="#333" stroke-width="3" stroke-dasharray="5 5" stroke-linecap="round"/><circle cx="100" cy="104" r="16" fill="#f57f31"/><path d="M95 100l5-4 5 4M100 96v14" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="100" cy="34" r="6" fill="#ffb784"/></svg>
+        </div>
+        <div>
+          <h3>作れたとしても、<br>家族や仲間に<em>どう渡す?</em></h3>
+          <p>自分の端末で動くだけでは、「これ使って」と言えません。アプリストアに出すのは大げさだし、相手にインストールを頼むのも気が引ける。リンクを送るだけで済めば、それがいちばん自然です。</p>
+        </div>
+      </article>
+    </div>
+    <div class="worries-head">
+      <h2>実はみんな<br><em>困っている</em><br>小さなこと</h2>
+      <span class="eyebrow-v">「欲しい」と「作れる」のあいだ</span>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="section-head center">
+      <span class="eyebrow">使い方</span>
+      <h2>3つの手順で、<br><em>自分のアプリ</em></h2>
+      <p>書くのは日本語だけ。コードは1行も出てきません。5分もかからず、最初の1つができます。</p>
+    </div>
+
+    <div class="point">
+      <div class="point-visual">
+        <div class="blob"></div><i class="dot" style="left:6%;bottom:12%"></i>
+        <div class="tiles-art" id="tilesArt"></div>
+      </div>
+      <div class="point-copy">
+        <span class="pt-num">Point 01</span>
+        <h3>作りたいものに近い<br><em>型をえらぶ</em></h3>
+        <p>チェックリスト・計算機・診断・記録帳・タイマー・くじ引きの6種類。「型」はアプリの骨組みです。中身を入れ替えるだけで、まったく別のアプリになります。</p>
+        <a class="more" href="#types">6つの型を見る<span class="arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></a>
+      </div>
+    </div>
+
+    <div class="point rev">
+      <div class="point-visual">
+        <div class="blob"></div><i class="dot" style="right:4%;top:8%"></i>
+        <div class="float-card left"><b>アプリの名前</b><div class="fl ac"></div><div class="fl"></div></div>
+        <div class="phone"><div class="screen"><div id="pt2" class="app-root"></div></div></div>
+        <div class="float-card right"><b>候補(1行に1つ)</b><div class="fl"></div><div class="fl ac" style="width:80%"></div><div class="fl" style="width:45%"></div></div>
+      </div>
+      <div class="point-copy">
+        <span class="pt-num">Point 02</span>
+        <h3>名前と中身を<br><em>書きかえる</em></h3>
+        <p>アプリの名前、色、項目を書きかえます。書いたそばから、となりのスマホ画面で動きます。気に入らなければ何度でも直せて、途中のものも自動で保存されます。</p>
+        <a class="more" href="make.html">工房で試す<span class="arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></a>
+      </div>
+    </div>
+
+    <div class="point">
+      <div class="point-visual">
+        <div class="blob"></div><i class="dot" style="left:8%;top:10%"></i>
+        <div class="float-pill top">https://…/app.html#JA1… <b>をコピー</b></div>
+        <div class="phone"><div class="screen"><div id="pt3" class="app-root"></div></div></div>
+        <div class="float-pill bottom"><b>ホーム画面に追加</b> でアプリに</div>
+      </div>
+      <div class="point-copy">
+        <span class="pt-num">Point 03</span>
+        <h3>リンクひとつで<br><em>家族や仲間に渡す</em></h3>
+        <p>リンクをコピーして送るだけ。開いた人はそのまま使えます。スマホの「ホーム画面に追加」で、アプリそのものとして置けます。このサイトがなくても動く単体の HTML としても持ち出せます。</p>
+        <a class="more" href="#gallery">渡せる作品例を見る<span class="arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section gray" id="types">
+  <div class="wrap">
+    <div class="section-head center">
+      <span class="eyebrow">型</span>
+      <h2>最初は<em>6つの型</em>から</h2>
+      <p>カードを押すと、その型で工房がひらきます。どれも最初から見本が入っているので、書きかえるところから始められます。</p>
+    </div>
+    <div class="grid grid-3" id="types-grid"></div>
+  </div>
+</section>
+
+<section class="section" id="gallery">
+  <div class="wrap">
+    <div class="section-head center">
+      <span class="eyebrow">作品例</span>
+      <h2>こんなアプリが、<em>すぐできる</em></h2>
+      <p>どれも工房で作った見本です。「開く」でそのまま使えて、「まねして作る」で自分のものにできます。</p>
+    </div>
+    <div class="grid grid-4" id="gallery-grid"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="dl-card">
+      <div class="dl-logo"><svg class="logo-svg" viewBox="0 0 120 120" aria-hidden="true"><circle class="ray" cx="60" cy="60" r="55" stroke-width="7" stroke-dasharray="2 8.36"/><circle class="base" cx="60" cy="60" r="47"/><path d="M51 40l9-8 9 8v9H51z" fill="var(--logo-ink)"/><text x="60" y="66" text-anchor="middle" font-size="16">じぶん</text><text x="60" y="82" text-anchor="middle" font-size="14">アプリ工房</text><text class="since" x="60" y="95" text-anchor="middle">SINCE 2026</text></svg></div>
+      <h3>最初の1つを、いま作ってみる</h3>
+      <p>5分もかかりません。無料で、登録もいりません。作ったものは、あなたの端末の中にだけ残ります。</p>
+      <div class="dl-actions">
+        <a class="btn" href="make.html">工房をひらく</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="next">
+  <div class="wrap">
+    <div class="section-head center">
+      <span class="eyebrow">これから</span>
+      <h2>自分で作る人が、<br><em>増えていく場所</em>に</h2>
+      <p>最初の一歩は「作れる体験」。そこから、見せ合い、まねし合える場所に育てます。</p>
+    </div>
+    <div class="road">
+      <div class="card now">
+        <span class="when">いま</span>
+        <h3>ひとりで作って、渡せる</h3>
+        <ul>
+          <li>6つの型から作る</li>
+          <li>リンクひとつで人に渡す</li>
+          <li>単体の HTML としても持ち出せる</li>
+          <li>アカウントもサーバーもなし</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="when">つぎ</span>
+        <h3>見せ合い、まねし合う</h3>
+        <ul>
+          <li>みんなの作品ギャラリー</li>
+          <li>「まねして作る」で型を受け継ぐ</li>
+          <li>よく使われる型が増えていく</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="when">そのさき</span>
+        <h3>作る人が、型を作る</h3>
+        <ul>
+          <li>型そのものを自分で設計できる</li>
+          <li>自作アプリの作成プラットフォームへ</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section gray" id="faq">
+  <div class="wrap faq">
+    <div class="section-head">
+      <h2>よくある<em>ご質問</em></h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item"><summary><span class="q">無料ですか?</span><span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary><div class="a"><p>無料です。作るのも、渡すのも、使うのもお金はかかりません。広告もありません。</p></div></details>
+      <details class="faq-item"><summary><span class="q">登録やインストールは必要ですか?</span><span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary><div class="a"><p>いりません。ブラウザで開くだけで作れます。アカウントもパスワードもありません。</p></div></details>
+      <details class="faq-item"><summary><span class="q">作ったアプリはどこに保存されますか?</span><span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary><div class="a"><p>あなたの端末(ブラウザ)の中だけです。このサイトのサーバーには送られません。ブラウザのデータを消すと一緒に消えるので、大事なものはリンクか HTML で手元に残してください。</p></div></details>
+      <details class="faq-item"><summary><span class="q">人に渡したアプリの記録は、相手に見えますか?</span><span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary><div class="a"><p>見えません。リンクに入っているのはアプリの「作り」(名前・項目・色)だけで、チェックや記録はそれぞれの端末の中に別々に残ります。</p></div></details>
+      <details class="faq-item"><summary><span class="q">スマホでも作れますか?</span><span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary><div class="a"><p>作れます。スマホでは画面下の「できあがりを見る」で、動いているアプリを確かめながら書きかえられます。</p></div></details>
+      <details class="faq-item"><summary><span class="q">6つの型にないものは作れませんか?</span><span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary><div class="a"><p>いまは6種類です。「こんな型が欲しい」が集まったものから増やしていきます。その先では、型そのものを自分で設計できるようにする予定です。</p></div></details>
+    </div>
+  </div>
+</section>
 
 <footer class="foot">
-  <p class="muted"><span id="updated"></span> · 出典や注意書きはここに書く</p>
+  <div class="wrap">
+    <div class="flogo"><svg class="logo-svg inv" viewBox="0 0 120 120" aria-hidden="true"><circle class="ray" cx="60" cy="60" r="55" stroke-width="7" stroke-dasharray="2 8.36"/><circle class="base" cx="60" cy="60" r="47"/><path d="M51 40l9-8 9 8v9H51z" fill="var(--logo-ink)"/><text x="60" y="66" text-anchor="middle" font-size="16">じぶん</text><text x="60" y="82" text-anchor="middle" font-size="14">アプリ工房</text><text class="since" x="60" y="95" text-anchor="middle">SINCE 2026</text></svg></div>
+    <nav class="foot-links">
+      <a href="./">トップページ</a>
+      <a href="#how">使い方</a>
+      <a href="#types">型</a>
+      <a href="#gallery">作品例</a>
+      <a href="#faq">よくあるご質問</a>
+      <a href="make.html">工房</a>
+    </nav>
+    <p class="note">アカウント・サーバー・個人情報なし。作ったアプリの中身はリンクの中に全部入っていて、このサイトには送られません。</p>
+    <p class="copy"><span id="updated"></span> · じぶんアプリ工房</p>
+  </div>
 </footer>
 
-<script src="app.js"></script>
+<script src="runtime.js"></script>
+<script src="templates.js"></script>
+<script src="nav.js"></script>
+<script src="site.js"></script>
 </body>
 </html>

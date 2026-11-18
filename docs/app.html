@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>じぶんアプリ</title>
+<meta name="description" content="じぶんアプリ工房で作られたアプリ">
+<meta name="theme-color" id="themeColor" content="#f57f31">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Maru+Gothic:wght@700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="viewer">
+  <div class="viewer-top">
+    <a class="vlogo" href="./" aria-label="じぶんアプリ工房 トップへ"><svg class="logo-svg" viewBox="0 0 120 120" aria-hidden="true"><circle class="ray" cx="60" cy="60" r="55" stroke-width="7" stroke-dasharray="2 8.36"/><circle class="base" cx="60" cy="60" r="47"/><path d="M51 40l9-8 9 8v9H51z" fill="var(--logo-ink)"/><text x="60" y="66" text-anchor="middle" font-size="16">じぶん</text><text x="60" y="82" text-anchor="middle" font-size="14">アプリ工房</text></svg></a>
+    <a class="vname" href="./">じぶんアプリ工房</a>
+    <span class="spacer"></span>
+    <span id="hint" class="small muted">記録はこの端末の中だけに残ります</span>
+    <a class="btn sm ghost" id="remix" href="make.html">まねして作る</a>
+  </div>
+  <div class="viewer-stage" id="stage"><div id="app" class="app-root"></div></div>
+</div>
+<script src="runtime.js"></script>
+<script src="templates.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

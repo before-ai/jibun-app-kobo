@@ -1,0 +1,724 @@
+<title>じぶんアプリ工房</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Maru+Gothic:wght@700;900&display=swap">
+<style>
+  /* レイアウト: 左に「型をえらぶ→書きかえる」の作業台、右にスマホ枠のできあがりプレビュー。狭い画面では縦に積む */
+  :root {
+    --bg: #eceff4;
+    --fg: #1c2230;
+    --muted: #5c6675;
+    --panel: #ffffff;
+    --line: #d5dbe5;
+    --soft: #f4f6fa;
+    --accent: #3a5bd9;
+    --accent-fg: #ffffff;
+    --good: #1f8a5b;
+    --danger: #b4232c;
+    --display: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Noto Sans JP", sans-serif;
+    --body: "Noto Sans JP", "Hiragino Sans", -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #11151d; --fg: #e8ebf2; --muted: #9aa3b5; --panel: #1a1f2a; --line: #2e3545; --soft: #222837;
+      --accent: #8ea2ff; --accent-fg: #11151d; --good: #5fd39a; --danger: #ff8d95; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #11151d; --fg: #e8ebf2; --muted: #9aa3b5; --panel: #1a1f2a; --line: #2e3545; --soft: #222837;
+    --accent: #8ea2ff; --accent-fg: #11151d; --good: #5fd39a; --danger: #ff8d95; color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 16px/1.7 var(--body);
+    padding-block: 24px 80px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; display: grid; gap: 20px; }
+  header.top { display: grid; gap: 4px; }
+  h1 { font: 900 1.9rem/1.25 var(--display); margin: 0; text-wrap: balance; letter-spacing: .01em; }
+  .lead { margin: 0; color: var(--muted); max-width: 40em; }
+  .cols { display: grid; grid-template-columns: minmax(0, 1fr) 390px; gap: 20px; align-items: start; }
+  .stack { display: grid; gap: 16px; min-width: 0; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; min-width: 0; }
+  .panel h2 { font: 700 1.1rem/1.4 var(--display); margin: 0 0 10px; display: flex; align-items: center; gap: 10px; }
+  .step { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--accent-fg); font: 700 .9rem/1 var(--display); flex: none; }
+  .muted { color: var(--muted); }
+  .small { font-size: .85rem; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+  /* じぶんのアプリ(切替チップ) */
+  .apps { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { font: inherit; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--soft); color: var(--fg); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; min-height: 36px; }
+  .chip .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  .chip[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--panel); font-weight: 700; }
+  .chip.new { border-style: dashed; color: var(--accent); }
+
+  /* 型をえらぶ */
+  .types { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .type { font: inherit; text-align: left; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); cursor: pointer; display: grid; gap: 4px; min-height: 44px; }
+  .type[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--soft); }
+  .type svg { width: 26px; height: 26px; color: var(--accent); }
+  .type b { font: 700 1rem/1.3 var(--display); }
+  .type span { font-size: .78rem; color: var(--muted); line-height: 1.4; }
+
+  /* 書きかえる */
+  .form { display: grid; gap: 12px; }
+  .form label { display: grid; gap: 4px; }
+  .form label > span { font-size: .85rem; color: var(--muted); }
+  .form .hint { font-size: .78rem; color: var(--muted); }
+  input, select, textarea, button { font: inherit; }
+  input[type="text"], select, textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--fg);
+  }
+  textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
+  .swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+  .sw { width: 34px; height: 34px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; padding: 0; }
+  .sw[aria-pressed="true"] { border-color: var(--fg); box-shadow: 0 0 0 2px var(--panel) inset; }
+  .btn { background: var(--accent); color: var(--accent-fg); border: 1px solid transparent; border-radius: 10px; padding: 10px 16px; min-height: 44px; cursor: pointer; font-weight: 700; }
+  .btn.ghost { background: transparent; color: var(--accent); border-color: var(--accent); }
+  .btn.danger { background: transparent; color: var(--danger); border-color: var(--danger); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* できあがり */
+  .preview-col { position: sticky; top: 16px; display: grid; gap: 12px; }
+  .phone { border: 1px solid var(--line); border-radius: 26px; background: var(--panel); overflow: hidden; box-shadow: 0 10px 30px rgba(20, 30, 60, .12); min-height: 520px; display: flex; flex-direction: column; }
+  .phone .app-root { flex: 1; --app-bg: var(--panel); --app-fg: var(--fg); --app-muted: var(--muted); --app-line: var(--line); }
+  .share textarea { font: .78rem/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; min-height: 90px; }
+  .toast { position: fixed; left: 50%; bottom: max(20px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 18px; border-radius: 999px; font-size: .9rem; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 20; max-width: calc(100vw - 32px); }
+  .toast.show { opacity: 1; }
+  .jump { display: none; }
+  details summary { cursor: pointer; font-weight: 700; }
+  .foot { font-size: .85rem; }
+  .foot p { margin: 4px 0; }
+
+  @media (max-width: 860px) {
+    .cols { grid-template-columns: 1fr; }
+    .preview-col { position: static; }
+    .jump { display: inline-flex; position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); z-index: 15; box-shadow: 0 6px 18px rgba(20, 30, 60, .25); border-radius: 999px; text-decoration: none; align-items: center; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <h1>じぶんアプリ工房</h1>
+    <p class="lead">型をえらんで、名前と中身を書きかえるだけ。自分だけのアプリがその場で動きます。できたアプリはスマホのホーム画面に置いたり、共有コードで仲間に渡せます。</p>
+  </header>
+
+  <section class="panel">
+    <h2>じぶんのアプリ</h2>
+    <div class="apps" id="apps"></div>
+  </section>
+
+  <div class="cols">
+    <div class="stack" id="editor">
+      <section class="panel">
+        <h2><span class="step">1</span>型をえらぶ</h2>
+        <div class="types" id="types"></div>
+      </section>
+
+      <section class="panel">
+        <h2><span class="step">2</span>名前と中身を書きかえる</h2>
+        <div class="form" id="form"></div>
+      </section>
+
+      <section class="panel share">
+        <h2>手渡す・持ち出す</h2>
+        <p class="small muted" style="margin:0 0 10px">共有コードは、このページの「読み込む」に貼ると同じアプリが現れます。HTML はファイルとして保存すれば、このページがなくても単体で動きます。</p>
+        <div class="row" style="margin-bottom:10px">
+          <button class="btn" id="copyCode">共有コードをコピー</button>
+          <button class="btn ghost" id="copyHtml">HTML をコピー</button>
+          <button class="btn ghost" id="dup">複製</button>
+          <button class="btn danger" id="del">このアプリを消す</button>
+        </div>
+        <label>
+          <span class="small muted">共有コード・書き出した HTML がここに出ます(貼り付けて「読み込む」もここ)</span>
+          <textarea id="shareBox" placeholder="JA1. で始まる共有コードを貼って「読み込む」"></textarea>
+        </label>
+        <div class="row" style="margin-top:8px">
+          <button class="btn ghost" id="importBtn">読み込む</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="preview-col" id="preview">
+      <section class="panel" style="padding:12px">
+        <h2 style="margin-bottom:8px"><span class="step">3</span>できあがり(そのまま使えます)</h2>
+        <div class="phone"><div id="app" class="app-root"></div></div>
+        <p class="small muted" style="margin:8px 0 0">記録はこの端末のブラウザの中だけに残ります。</p>
+      </section>
+    </div>
+  </div>
+
+  <footer class="foot muted">
+    <p>いまは「作れる体験」まで。作ったアプリを見せ合い、ほかの人の型を取り込める場所にしていくのが次の段階です。</p>
+    <p>アカウント・サーバー・個人情報なし。すべてこのページの中で動きます。更新: 2026-11-06</p>
+  </footer>
+</div>
+
+<a class="btn jump" href="#preview">できあがりを見る ↓</a>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+  // ===== できあがったアプリ本体(書き出した HTML にもこのまま入る。外の変数に頼らない) =====
+  const APP_CSS = `
+.app-root{--ac:#3a5bd9;--app-bg:#fff;--app-fg:#1c2230;--app-muted:#6b7385;--app-line:#e1e5ee;font:16px/1.6 "Noto Sans JP","Hiragino Sans",-apple-system,sans-serif;color:var(--app-fg);background:var(--app-bg);min-height:100%;display:flex;flex-direction:column}
+@media (prefers-color-scheme:dark){.app-root{--app-bg:#171b24;--app-fg:#e8ebf2;--app-muted:#9aa3b5;--app-line:#2e3545}}
+.app-root *{box-sizing:border-box}
+.app-head{background:var(--ac);color:#fff;padding:22px 18px 16px}
+.app-head h1{margin:0;font:700 1.35rem/1.3 "Zen Maru Gothic","Hiragino Maru Gothic ProN","Noto Sans JP",sans-serif}
+.app-head p{margin:4px 0 0;opacity:.92;font-size:.9rem}
+.app-body{padding:16px 18px;display:grid;gap:14px;flex:1;align-content:start}
+.app-foot{padding:12px 18px;font-size:.75rem;color:var(--app-muted);border-top:1px solid var(--app-line)}
+.app-btn{font:inherit;min-height:46px;padding:10px 18px;border-radius:999px;border:2px solid var(--ac);background:var(--ac);color:#fff;font-weight:700;cursor:pointer}
+.app-btn.ghost{background:transparent;color:var(--ac)}
+.app-btn:disabled{opacity:.6;cursor:default}
+.app-chip{font:inherit;padding:6px 12px;border-radius:999px;border:1px solid var(--app-line);background:transparent;color:var(--app-fg);cursor:pointer;min-height:36px}
+.app-chip[aria-pressed="true"]{border-color:var(--ac);color:var(--ac);font-weight:700}
+.app-list{list-style:none;margin:0;padding:0}
+.app-list li{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--app-line)}
+.app-list li:first-child{border-top:0}
+.app-list label{display:flex;gap:10px;align-items:center;flex:1;cursor:pointer;min-width:0}
+.app-list label.done{color:var(--app-muted);text-decoration:line-through}
+.app-list input[type=checkbox]{width:22px;height:22px;accent-color:var(--ac);flex:none;margin:0}
+.app-bar{height:8px;border-radius:999px;background:var(--app-line);overflow:hidden}
+.app-bar i{display:block;height:100%;background:var(--ac);transition:width .3s}
+.app-stat{font-size:.95rem;color:var(--app-muted)}
+.app-stat strong{font-size:1.6rem;color:var(--app-fg);font-variant-numeric:tabular-nums;margin-right:4px}
+.app-fields{display:grid;gap:10px}
+.app-fields label{display:grid;gap:4px;font-size:.9rem;color:var(--app-muted)}
+.app-root input:not([type=checkbox]){font:inherit;padding:10px 12px;border:1px solid var(--app-line);border-radius:10px;background:transparent;color:var(--app-fg);width:100%;min-height:44px}
+.app-result{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;padding:14px 16px;border-radius:14px;background:color-mix(in srgb,var(--ac) 12%,transparent)}
+.app-result strong{font-size:2rem;font-variant-numeric:tabular-nums;line-height:1.2}
+.app-result-label{color:var(--app-muted)}
+.app-result.big{flex-direction:column;align-items:center;text-align:center;padding:28px 16px;min-height:120px;justify-content:center}
+.app-result.big strong{font-size:1.7rem;overflow-wrap:anywhere}
+.app-result.big p{margin:6px 0 0;color:var(--app-muted)}
+.app-q{font-size:1.25rem;font-weight:700;margin:8px 0;line-height:1.5}
+.app-row{display:flex;gap:10px;flex-wrap:wrap}
+.app-row .app-btn{flex:1}
+.app-clock{font-size:3.6rem;font-weight:700;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:.02em;line-height:1.1}
+.app-note{margin:0;font-size:.85rem;color:var(--app-muted)}
+.app-empty{margin:0;padding:18px;text-align:center;color:var(--app-muted);border:1px dashed var(--app-line);border-radius:12px}
+.app-x{border:0;background:transparent;color:var(--app-muted);font-size:1.2rem;cursor:pointer;padding:4px 8px;min-width:36px}
+.app-date{font-size:.85rem;color:var(--app-muted);font-variant-numeric:tabular-nums;flex:none}
+.app-memo{flex:1;font-size:.85rem;color:var(--app-muted);min-width:0;overflow-wrap:anywhere}
+.app-spark{width:100%;height:64px;display:block}
+@media (prefers-reduced-motion:reduce){.app-root *{transition:none!important}}
+`;
+
+  { const s = document.createElement("style"); s.textContent = APP_CSS; document.head.append(s); }
+
+  function runApp(config, root, storeKey) {
+    const f = config.fields || {};
+    const lines = (s) => String(s || "").split("\n").map((x) => x.trim()).filter(Boolean);
+    const st = {
+      load() { try { return JSON.parse(localStorage.getItem(storeKey)) || {}; } catch (e) { return {}; } },
+      save(o) { try { localStorage.setItem(storeKey, JSON.stringify(o)); } catch (e) {} },
+    };
+    function h(tag, attrs, ...kids) {
+      const n = document.createElement(tag);
+      for (const [k, v] of Object.entries(attrs || {})) {
+        if (k === "class") n.className = v;
+        else if (k === "value") n.value = v;
+        else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+        else n.setAttribute(k, v);
+      }
+      for (const k of kids) if (k !== "" && k != null) n.append(k);
+      return n;
+    }
+    const fmtNum = (n) => (!isFinite(n) ? "計算できません" : (Math.round(n * 100) / 100).toLocaleString("ja-JP"));
+    const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
+
+    if (root.__cleanup) { try { root.__cleanup(); } catch (e) {} }
+    root.__cleanup = null;
+    root.classList.add("app-root");
+    root.style.setProperty("--ac", config.color || "#3a5bd9");
+
+    function frame(...body) {
+      root.replaceChildren(
+        h("header", { class: "app-head" }, h("h1", {}, config.name || "名前のないアプリ"), config.desc ? h("p", {}, config.desc) : ""),
+        h("main", { class: "app-body" }, ...body),
+        h("footer", { class: "app-foot" }, "じぶんアプリ工房で作成 · 記録はこの端末の中だけに残ります"),
+      );
+    }
+
+    const views = {
+      checklist() {
+        const items = lines(f.items);
+        // 行番号で記録する(同じ文の行が複数あっても別々に扱う)。古い記録(文で保存)は行番号に読み替える
+        const done = new Set((st.load().done || []).map((d) => (typeof d === "number" ? d : items.indexOf(d))).filter((i) => i >= 0 && i < items.length));
+        const draw = () => {
+          const n = items.filter((_, i) => done.has(i)).length;
+          frame(
+            h("div", { class: "app-stat" }, h("strong", {}, `${n} / ${items.length}`), "できた"),
+            h("div", { class: "app-bar" }, h("i", { style: `width:${items.length ? (n / items.length) * 100 : 0}%` })),
+            items.length
+              ? h("ul", { class: "app-list" }, ...items.map((it, idx) => {
+                  const cb = h("input", { type: "checkbox" });
+                  cb.checked = done.has(idx);
+                  cb.addEventListener("change", () => { cb.checked ? done.add(idx) : done.delete(idx); st.save({ done: [...done] }); draw(); });
+                  return h("li", {}, h("label", { class: done.has(idx) ? "done" : "" }, cb, h("span", {}, it)));
+                }))
+              : h("p", { class: "app-empty" }, "項目がまだありません。左の欄に1行ずつ書いてください。"),
+            items.length ? h("button", { class: "app-btn ghost", onclick: () => { done.clear(); st.save({ done: [] }); draw(); } }, "全部もどす") : "",
+          );
+        };
+        draw();
+      },
+
+      calc() {
+        const inputs = lines(f.inputs);
+        // 以前は名前で記録していた。数字だけの名前は番号の記録とぶつかるので読み替えない
+        const legacy = (name) => !/^\d+$/.test(name);
+        const op = f.op || "sum";
+        const vals = st.load().vals || {};
+        const opName = { sum: "すべて足します", avg: "平均を出します", mul: "すべて掛けます", div: "上から順に割ります", sub: "上から順に引きます" };
+        const fields = inputs.map((name, i) => {
+          const inp = h("input", { type: "number", inputmode: "decimal", placeholder: "0", value: vals[i] ?? (legacy(name) ? vals[name] : undefined) ?? "" });
+          inp.addEventListener("input", () => { vals[i] = inp.value; if (legacy(name)) delete vals[name]; st.save({ vals }); update(); });
+          return { name, inp };
+        });
+        const out = h("div", { class: "app-result" });
+        function compute() {
+          const nums = fields.map((x) => parseFloat(x.inp.value));
+          if (!nums.length || nums.some((n) => isNaN(n))) return null;
+          if (op === "avg") return nums.reduce((a, b) => a + b, 0) / nums.length;
+          if (op === "mul") return nums.reduce((a, b) => a * b, 1);
+          if (op === "div") return nums.slice(1).reduce((a, b) => (b === 0 ? NaN : a / b), nums[0]);
+          if (op === "sub") return nums.slice(1).reduce((a, b) => a - b, nums[0]);
+          return nums.reduce((a, b) => a + b, 0);
+        }
+        function update() {
+          const r = compute();
+          out.replaceChildren(
+            h("span", { class: "app-result-label" }, f.resultLabel || "結果"),
+            h("strong", {}, r === null ? "—" : fmtNum(r)),
+            h("span", { class: "app-result-label" }, r === null ? "" : f.unit || ""),
+          );
+        }
+        frame(
+          fields.length
+            ? h("div", { class: "app-fields" }, ...fields.map((x) => h("label", {}, h("span", {}, x.name), x.inp)))
+            : h("p", { class: "app-empty" }, "入れる数がまだありません。"),
+          h("p", { class: "app-note" }, opName[op] || ""),
+          out,
+          h("button", { class: "app-btn ghost", onclick: () => { fields.forEach((x) => (x.inp.value = "")); Object.keys(vals).forEach((k) => delete vals[k]); st.save({ vals }); update(); } }, "クリア"),
+        );
+        update();
+      },
+
+      quiz() {
+        const qs = lines(f.questions);
+        const res = lines(f.results).map((l) => { const [t, ...d] = l.split("|"); return { title: t.trim(), desc: d.join("|").trim() }; });
+        let i = 0, score = 0;
+        function draw() {
+          if (!qs.length) { frame(h("p", { class: "app-empty" }, "質問がまだありません。")); return; }
+          if (i >= qs.length) {
+            const idx = Math.min(res.length - 1, Math.floor((score / qs.length) * res.length));
+            const r = res[idx] || { title: `「はい」が ${score} 個`, desc: "" };
+            frame(
+              h("p", { class: "app-note" }, `「はい」が ${score} / ${qs.length}`),
+              h("div", { class: "app-result big" }, h("strong", {}, r.title), r.desc ? h("p", {}, r.desc) : ""),
+              h("button", { class: "app-btn", onclick: () => { i = 0; score = 0; draw(); } }, "もう一度"),
+            );
+            return;
+          }
+          frame(
+            h("p", { class: "app-note" }, `${i + 1} / ${qs.length}`),
+            h("div", { class: "app-bar" }, h("i", { style: `width:${(i / qs.length) * 100}%` })),
+            h("p", { class: "app-q" }, qs[i]),
+            h("div", { class: "app-row" },
+              h("button", { class: "app-btn", onclick: () => { score++; i++; draw(); } }, "はい"),
+              h("button", { class: "app-btn ghost", onclick: () => { i++; draw(); } }, "いいえ")),
+          );
+        }
+        draw();
+      },
+
+      log() {
+        const label = f.valueLabel || "値";
+        const unit = f.unit || "";
+        const rows = st.load().rows || [];
+        function spark() {
+          const pts = rows.slice(0, 14).reverse();
+          if (pts.length < 2) return "";
+          const ns = "http://www.w3.org/2000/svg";
+          const svg = document.createElementNS(ns, "svg");
+          svg.setAttribute("viewBox", "0 0 300 64"); svg.setAttribute("class", "app-spark"); svg.setAttribute("aria-hidden", "true");
+          const vs = pts.map((r) => r.v); const min = Math.min(...vs), max = Math.max(...vs); const span = max - min || 1;
+          const xy = pts.map((r, k) => [8 + (k / (pts.length - 1)) * 284, 54 - ((r.v - min) / span) * 44]);
+          const area = document.createElementNS(ns, "path");
+          area.setAttribute("d", `M${xy[0][0]},60 ` + xy.map((p) => `L${p[0]},${p[1]}`).join(" ") + ` L${xy[xy.length - 1][0]},60 Z`);
+          area.setAttribute("fill", "var(--ac)"); area.setAttribute("opacity", "0.15");
+          const line = document.createElementNS(ns, "polyline");
+          line.setAttribute("points", xy.map((p) => p.join(",")).join(" ")); line.setAttribute("fill", "none"); line.setAttribute("stroke", "var(--ac)"); line.setAttribute("stroke-width", "2.5"); line.setAttribute("stroke-linejoin", "round");
+          const dot = document.createElementNS(ns, "circle");
+          const last = xy[xy.length - 1]; dot.setAttribute("cx", last[0]); dot.setAttribute("cy", last[1]); dot.setAttribute("r", "4"); dot.setAttribute("fill", "var(--ac)");
+          svg.append(area, line, dot);
+          return svg;
+        }
+        function draw() {
+          const date = h("input", { type: "date", value: today() });
+          const val = h("input", { type: "number", inputmode: "decimal", placeholder: label });
+          const memo = h("input", { type: "text", placeholder: "ひとこと(なくてもOK)" });
+          const nums = rows.map((r) => r.v);
+          const avg = nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : null;
+          frame(
+            h("div", { class: "app-fields" },
+              h("label", {}, h("span", {}, "日付"), date),
+              h("label", {}, h("span", {}, unit ? `${label}(${unit})` : label), val),
+              h("label", {}, h("span", {}, "メモ"), memo)),
+            h("button", { class: "app-btn", onclick: () => { const v = parseFloat(val.value); if (isNaN(v)) { val.focus(); return; } rows.unshift({ d: date.value || today(), v, m: memo.value.trim() }); st.save({ rows }); draw(); } }, "記録する"),
+            rows.length
+              ? h("div", { class: "app-stat" }, `${rows.length} 件 · 平均 `, h("strong", {}, fmtNum(avg)), unit)
+              : h("p", { class: "app-empty" }, "まだ記録がありません。最初の1件をどうぞ。"),
+            spark(),
+            h("ul", { class: "app-list" }, ...rows.slice(0, 30).map((r, idx) =>
+              h("li", {}, h("span", { class: "app-date" }, r.d), h("strong", {}, `${fmtNum(r.v)}${unit}`), h("span", { class: "app-memo" }, r.m || ""),
+                h("button", { class: "app-x", title: "この記録を消す", onclick: () => { rows.splice(idx, 1); st.save({ rows }); draw(); } }, "×")))),
+          );
+        }
+        draw();
+      },
+
+      timer() {
+        const parseSec = (s) => {
+          s = String(s || "").trim();
+          if (/^\d+$/.test(s)) return parseInt(s, 10);
+          let t = 0; const m = s.match(/(\d+)\s*分/); const sec = s.match(/(\d+)\s*秒/);
+          if (m) t += parseInt(m[1], 10) * 60; if (sec) t += parseInt(sec[1], 10);
+          return t;
+        };
+        const presets = lines(f.presets).map((l) => { const [n, s] = l.split("|"); return { name: (n || "").trim(), sec: parseSec(s ?? n) }; }).filter((p) => p.sec > 0);
+        let total = presets[0] ? presets[0].sec : 60, left = total, tick = null, running = false, cur = 0;
+        const fmtT = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+        // iOS Safari などは利用者の操作中に作った音声コンテキストしか鳴らない。スタート時に作って終了時に使い回す
+        let audio = null;
+        function unlockAudio() {
+          try {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (!Ctx) return;
+            if (!audio) audio = new Ctx();
+            if (audio.state === "suspended") audio.resume().catch(() => {});
+          } catch (e) {}
+        }
+        function beep() {
+          try {
+            const ctx = audio; if (!ctx) return;
+            [0, 0.25, 0.5].forEach((at) => { const o = ctx.createOscillator(); const g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.value = 880; g.gain.value = 0.15; o.start(ctx.currentTime + at); o.stop(ctx.currentTime + at + 0.18); });
+          } catch (e) {}
+        }
+        const disp = h("div", { class: "app-clock" });
+        const bar = h("i", {});
+        const status = h("p", { class: "app-note", style: "text-align:center;min-height:1.4em" });
+        const chips = presets.map((p, k) => h("button", { class: "app-chip", onclick: () => { stop(); cur = k; total = p.sec; left = total; update(); } }, `${p.name} ${fmtT(p.sec)}`));
+        function update() {
+          disp.textContent = fmtT(left);
+          bar.style.width = `${total ? (1 - left / total) * 100 : 0}%`;
+          startBtn.textContent = running ? "一時停止" : left === total ? "スタート" : left === 0 ? "もう一度" : "再開";
+          status.textContent = left === 0 ? "時間です!" : running ? "計測中" : "";
+          chips.forEach((c, k) => c.setAttribute("aria-pressed", String(k === cur)));
+        }
+        function stop() { clearInterval(tick); tick = null; running = false; }
+        function start() {
+          if (left <= 0) left = total;
+          running = true;
+          const end = Date.now() + left * 1000;
+          tick = setInterval(() => { left = Math.max(0, Math.round((end - Date.now()) / 1000)); if (left === 0) { stop(); beep(); } update(); }, 250);
+          update();
+        }
+        const startBtn = h("button", { class: "app-btn", onclick: () => { if (running) { stop(); update(); } else { unlockAudio(); start(); } } });
+        const resetBtn = h("button", { class: "app-btn ghost", onclick: () => { stop(); left = total; update(); } }, "リセット");
+        root.__cleanup = stop;
+        frame(
+          presets.length ? h("div", { class: "app-row" }, ...chips) : h("p", { class: "app-note" }, "時間の候補がないので 1 分で動きます。"),
+          disp,
+          h("div", { class: "app-bar" }, bar),
+          status,
+          h("div", { class: "app-row" }, startBtn, resetBtn),
+        );
+        update();
+      },
+
+      lottery() {
+        const items = lines(f.items);
+        const exclude = f.exclude === "yes";
+        // 引いた候補は番号で記録する(同じ文字の候補も別々のくじ)。以前の文字での記録は番号に読み替える
+        const saved = st.load();
+        let drawn = Array.isArray(saved.drawnIdx)
+          ? saved.drawnIdx.filter((i) => Number.isInteger(i) && i >= 0 && i < items.length)
+          : (saved.drawn || []).reduce((acc, label) => { const i = items.findIndex((x, j) => x === label && !acc.includes(j)); if (i >= 0) acc.push(i); return acc; }, []);
+        const out = h("div", { class: "app-result big" }, h("strong", {}, "?"));
+        const note = h("p", { class: "app-note", style: "text-align:center" });
+        const all = items.map((x, i) => i);
+        function remain() { return all.filter((i) => !drawn.includes(i)); }
+        function drawNote() { note.textContent = exclude ? `残り ${remain().length} / ${items.length}` : `${items.length} 個の中からひとつ`; }
+        let spin = null;
+        root.__cleanup = () => { clearInterval(spin); spin = null; };
+        const btn = h("button", { class: "app-btn", onclick: () => {
+          const pool = exclude ? remain() : all;
+          if (!pool.length) { out.replaceChildren(h("strong", {}, items.length ? "全部引きました" : "候補がありません")); return; }
+          if (spin) return;
+          btn.disabled = true; let n = 0;
+          spin = setInterval(() => {
+            out.replaceChildren(h("strong", {}, items[pool[Math.floor(Math.random() * pool.length)]]));
+            if (++n >= 12) {
+              clearInterval(spin); spin = null;
+              const pick = pool[Math.floor(Math.random() * pool.length)];
+              out.replaceChildren(h("strong", {}, items[pick]));
+              if (exclude) { drawn.push(pick); st.save({ drawnIdx: drawn }); }
+              btn.disabled = false; drawNote();
+            }
+          }, 70);
+        } }, "引く!");
+        frame(
+          out, btn, note,
+          exclude ? h("button", { class: "app-btn ghost", onclick: () => { clearInterval(spin); spin = null; btn.disabled = false; drawn = []; st.save({ drawnIdx: drawn }); out.replaceChildren(h("strong", {}, "?")); drawNote(); } }, "最初から") : "",
+        );
+        drawNote();
+      },
+    };
+    (views[config.type] || views.checklist)();
+  }
+
+  // ===== 工房側(型の一覧・編集・保存・書き出し) =====
+  const ICON = {
+    checklist: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg>',
+    calc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 13h3M13 13h3M8 17h3M13 17h3"/></svg>',
+    quiz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.7"/><path d="M12 17h.01"/></svg>',
+    log: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M7 15l4-5 3 3 5-7"/></svg>',
+    timer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2"/><path d="M9 2h6"/></svg>',
+    lottery: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="8.5" cy="8.5" r="1" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1" fill="currentColor"/></svg>',
+  };
+
+  const TEMPLATES = {
+    checklist: { name: "チェックリスト", blurb: "持ち物・手順・やることを一つずつ消す", eg: "旅行の持ち物、開店前の手順",
+      fields: [{ key: "items", label: "項目(1行に1つ)", kind: "textarea" }],
+      sample: { name: "出かける前チェック", desc: "玄関で確認", items: "鍵\n財布\nスマホ\n充電器\n傘" } },
+    calc: { name: "計算機", blurb: "数を入れると答えが出る", eg: "割り勘、燃費、値引き後の値段",
+      fields: [
+        { key: "inputs", label: "入れる数の名前(1行に1つ)", kind: "textarea", rows: 4 },
+        { key: "op", label: "計算の仕方", kind: "select", options: [["sum", "すべて足す"], ["avg", "平均を出す"], ["mul", "すべて掛ける"], ["div", "上から順に割る"], ["sub", "上から順に引く"]] },
+        { key: "resultLabel", label: "答えの名前", kind: "text" },
+        { key: "unit", label: "単位", kind: "text" },
+      ],
+      sample: { name: "割り勘けいさん", desc: "合計と人数を入れるだけ", inputs: "金額(円)\n人数", op: "div", resultLabel: "ひとり", unit: "円" } },
+    quiz: { name: "診断", blurb: "はい・いいえで答えると結果が出る", eg: "性格診断、向いている過ごし方",
+      fields: [
+        { key: "questions", label: "質問(1行に1つ。「はい」が多いほど下の結果に近づく)", kind: "textarea" },
+        { key: "results", label: "結果(1行に1つ、上から「はい」が少ない順。「見出し|説明」で書く)", kind: "textarea", rows: 4 },
+      ],
+      sample: { name: "休日タイプ診断", desc: "5問で分かる", questions: "朝、自然に目が覚める\n休みの日は外に出たい\n計画を立ててから動く\n人と話すと元気が出る\n新しい店をすぐ試す", results: "じっくり派|家でゆっくりが向いています。\nバランス派|その日の気分で動けるタイプ。\n行動派|思い立ったらすぐ出発。" } },
+    log: { name: "記録帳", blurb: "日付と数をためて折れ線で見る", eg: "体重、釣れた数、売上",
+      fields: [{ key: "valueLabel", label: "記録する数の名前", kind: "text" }, { key: "unit", label: "単位", kind: "text" }],
+      sample: { name: "体重メモ", desc: "朝いちで測る", valueLabel: "体重", unit: "kg" } },
+    timer: { name: "タイマー", blurb: "決めた時間を測って知らせる", eg: "料理、勉強、筋トレ",
+      fields: [{ key: "presets", label: "時間の候補(1行に1つ。「名前|3分」「名前|90秒」「名前|180」)", kind: "textarea", rows: 5 }],
+      sample: { name: "台所タイマー", desc: "よく使う時間をボタンに", presets: "カップ麺|3分\nゆで卵(半熟)|7分\n煮込み|20分\n休憩|5分" } },
+    lottery: { name: "くじ引き", blurb: "候補からひとつ選ぶ", eg: "晩ごはん、順番決め、行き先",
+      fields: [
+        { key: "items", label: "候補(1行に1つ)", kind: "textarea" },
+        { key: "exclude", label: "一度出たものは", kind: "select", options: [["no", "また出る"], ["yes", "出ないようにする(全部出たら最初から)"]] },
+      ],
+      sample: { name: "今晩のおかずくじ", desc: "迷ったら引く", items: "ゴーヤーチャンプルー\nカレー\n焼き魚\n餃子\n沖縄そば\n唐揚げ\n鍋", exclude: "yes" } },
+  };
+  const COLORS = ["#3a5bd9", "#0e8a6f", "#c2452d", "#b07a0b", "#7b3fb3", "#d0407f", "#1a8fb5", "#2b2f3a"];
+
+  const store = {
+    key: "jibun-app-kobo:v1",
+    load() { try { return JSON.parse(localStorage.getItem(this.key)) ?? {}; } catch { return {}; } },
+    save(obj) { try { localStorage.setItem(this.key, JSON.stringify(obj)); } catch {} },
+  };
+  const uid = () => Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4);
+
+  function el(tag, attrs = {}, ...children) {
+    const node = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === "class") node.className = v;
+      else if (k === "value") node.value = v;
+      else if (k === "html") node.innerHTML = v;
+      else if (k.startsWith("on")) node.addEventListener(k.slice(2), v);
+      else node.setAttribute(k, v);
+    }
+    for (const c of children) if (c !== "" && c != null) node.append(c);
+    return node;
+  }
+
+  function makeApp(type, from) {
+    const t = TEMPLATES[type];
+    const src = from || t.sample;
+    const fields = {};
+    for (const fd of t.fields) fields[fd.key] = src[fd.key] ?? "";
+    return { id: uid(), type, name: src.name || t.name, desc: src.desc || "", color: src.color || COLORS[0], fields, created: new Date().toISOString().slice(0, 10) };
+  }
+
+  let state = store.load();
+  if (!Array.isArray(state.apps) || !state.apps.length) {
+    const a = makeApp("calc"), b = makeApp("checklist", { ...TEMPLATES.checklist.sample, name: "釣り出発チェック", desc: "忘れ物ゼロで港へ", items: "竿とリール\n仕掛け・オモリ\nエサ\nライフジャケット\n飲み物\nクーラーボックス\n帽子・日焼け止め", color: COLORS[1] }), c = makeApp("lottery", { ...TEMPLATES.lottery.sample, color: COLORS[2] });
+    state = { apps: [a, b, c], currentId: a.id };
+    store.save(state);
+  }
+  const current = () => state.apps.find((a) => a.id === state.currentId) || state.apps[0];
+  function persist() { store.save(state); }
+
+  let toastTimer;
+  function toast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg; t.classList.add("show");
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+  }
+
+  // --- 描画 ---
+  function renderApps() {
+    const box = document.getElementById("apps");
+    box.replaceChildren(
+      ...state.apps.map((a) => el("button", { class: "chip", "aria-pressed": String(a.id === current().id), onclick: () => { state.currentId = a.id; persist(); renderAll(); } },
+        el("span", { class: "dot", style: `background:${a.color}` }), a.name || "(名前なし)", el("span", { class: "muted small" }, TEMPLATES[a.type]?.name || ""))),
+      el("button", { class: "chip new", onclick: () => { const a = makeApp(current().type); state.apps.push(a); state.currentId = a.id; persist(); renderAll(); toast("新しいアプリを作りました。名前から書きかえてください"); } }, "+ 新しく作る"),
+    );
+  }
+
+  function renderTypes() {
+    const box = document.getElementById("types");
+    const cur = current();
+    box.replaceChildren(...Object.entries(TEMPLATES).map(([key, t]) =>
+      el("button", { class: "type", "aria-pressed": String(cur.type === key), onclick: () => {
+        if (cur.type === key) return;
+        cur.type = key;
+        const fields = {};
+        for (const fd of t.fields) fields[fd.key] = cur.fields[fd.key] ?? t.sample[fd.key] ?? "";
+        cur.fields = fields;
+        persist(); renderAll();
+      } },
+        el("span", { html: ICON[key] }), el("b", {}, t.name), el("span", {}, t.blurb), el("span", {}, `例: ${t.eg}`))));
+  }
+
+  let previewTimer;
+  function schedulePreview() { clearTimeout(previewTimer); previewTimer = setTimeout(renderPreview, 180); }
+
+  function renderForm() {
+    const cur = current(); const t = TEMPLATES[cur.type];
+    const form = document.getElementById("form");
+    const bind = (node, apply) => { node.addEventListener("input", () => { apply(node.value); persist(); schedulePreview(); renderApps(); }); return node; };
+    const kids = [
+      el("label", {}, el("span", {}, "アプリの名前"), bind(el("input", { type: "text", id: "f-name", value: cur.name, maxlength: "40" }), (v) => (cur.name = v))),
+      el("label", {}, el("span", {}, "ひとこと説明"), bind(el("input", { type: "text", id: "f-desc", value: cur.desc, maxlength: "60" }), (v) => (cur.desc = v))),
+      el("div", {}, el("span", { class: "small muted" }, "色"), el("div", { class: "swatches", style: "margin-top:4px" }, ...COLORS.map((c) =>
+        el("button", { class: "sw", type: "button", style: `background:${c}`, "aria-label": c, "aria-pressed": String(cur.color === c), onclick: () => { cur.color = c; persist(); renderForm(); renderPreview(); renderApps(); } })))),
+    ];
+    for (const fd of t.fields) {
+      let input;
+      if (fd.kind === "textarea") input = el("textarea", { id: `f-${fd.key}`, rows: String(fd.rows || 6), value: cur.fields[fd.key] || "" });
+      else if (fd.kind === "select") { input = el("select", { id: `f-${fd.key}` }, ...fd.options.map(([v, l]) => el("option", { value: v }, l))); input.value = cur.fields[fd.key] || fd.options[0][0]; }
+      else input = el("input", { type: "text", id: `f-${fd.key}`, value: cur.fields[fd.key] || "" });
+      bind(input, (v) => (cur.fields[fd.key] = v));
+      if (fd.kind === "select") input.addEventListener("change", () => { cur.fields[fd.key] = input.value; persist(); renderPreview(); });
+      kids.push(el("label", {}, el("span", {}, fd.label), input));
+    }
+    form.replaceChildren(...kids);
+  }
+
+  function renderPreview() {
+    const root = document.getElementById("app");
+    const cur = current();
+    runApp(cur, root, `jibun-app:${cur.id}`);
+  }
+
+  // 削除の確認は「いま選んでいるアプリ」に結びつける。切り替えや再描画で解除する
+  let armTimer;
+  function disarmDelete() { const btn = document.getElementById("del"); btn.dataset.armed = ""; btn.textContent = "このアプリを消す"; }
+  function renderAll() { disarmDelete(); renderApps(); renderTypes(); renderForm(); renderPreview(); }
+
+  // --- 手渡す・持ち出す ---
+  const b64 = (s) => btoa(unescape(encodeURIComponent(s)));
+  const unb64 = (s) => decodeURIComponent(escape(atob(s.replace(/-/g, "+").replace(/_/g, "/"))));
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  function shareCode(cfg) {
+    const { id, created, ...rest } = cfg;
+    return "JA1." + b64(JSON.stringify(rest));
+  }
+  function parseShare(text) {
+    const m = String(text).trim().match(/JA1\.([A-Za-z0-9_\-+/=]+)/);
+    if (!m) return null;
+    try {
+      const o = JSON.parse(unb64(m[1]));
+      if (!TEMPLATES[o.type]) return null;
+      return makeApp(o.type, { ...o.fields, name: o.name, desc: o.desc, color: o.color });
+    } catch { return null; }
+  }
+  function standaloneHtml(cfg) {
+    const json = JSON.stringify(cfg).replace(/<\//g, "<\\/");
+    return `<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="${esc(cfg.color || "#3a5bd9")}">
+<title>${esc(cfg.name || "じぶんアプリ")}</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Zen+Maru+Gothic:wght@700&display=swap">
+<style>
+html,body{margin:0;min-height:100%;background:#eceff4}
+@media (prefers-color-scheme:dark){html,body{background:#0f1218}}
+#app{max-width:520px;margin:0 auto;min-height:100vh}
+${APP_CSS}
+</style>
+</head>
+<body>
+<div id="app" class="app-root"></div>
+<script>
+const CONFIG = ${json};
+${runApp.toString()}
+runApp(CONFIG, document.getElementById("app"), "jibun-app:" + CONFIG.id);
+<\/script>
+</body>
+</html>
+`;
+  }
+
+  async function copyText(text, label) {
+    const box = document.getElementById("shareBox");
+    box.value = text;
+    try {
+      await navigator.clipboard.writeText(text);
+      toast(`${label}をコピーしました`);
+    } catch {
+      box.focus(); box.select();
+      toast("下の欄に出しました。選択してコピーしてください");
+    }
+  }
+
+  document.getElementById("copyCode").addEventListener("click", () => copyText(shareCode(current()), "共有コード"));
+  document.getElementById("copyHtml").addEventListener("click", () => copyText(standaloneHtml(current()), "HTML"));
+  document.getElementById("dup").addEventListener("click", () => {
+    const cur = current();
+    const a = { ...cur, id: uid(), name: `${cur.name} のコピー`, fields: { ...cur.fields }, created: new Date().toISOString().slice(0, 10) };
+    state.apps.push(a); state.currentId = a.id; persist(); renderAll(); toast("複製しました");
+  });
+  document.getElementById("del").addEventListener("click", () => {
+    const btn = document.getElementById("del");
+    const cur = current();
+    if (btn.dataset.armed !== cur.id) { btn.dataset.armed = cur.id; btn.textContent = "本当に消す(もう一度押す)"; clearTimeout(armTimer); armTimer = setTimeout(disarmDelete, 3000); return; }
+    clearTimeout(armTimer);
+    try { localStorage.removeItem(`jibun-app:${cur.id}`); } catch {}
+    state.apps = state.apps.filter((a) => a.id !== cur.id);
+    if (!state.apps.length) state.apps.push(makeApp("checklist"));
+    state.currentId = state.apps[0].id;
+    btn.dataset.armed = ""; btn.textContent = "このアプリを消す";
+    persist(); renderAll(); toast("消しました");
+  });
+  document.getElementById("importBtn").addEventListener("click", () => {
+    const a = parseShare(document.getElementById("shareBox").value);
+    if (!a) { toast("共有コードが読めませんでした。JA1. で始まるコードを貼ってください"); return; }
+    state.apps.push(a); state.currentId = a.id; persist(); renderAll();
+    document.getElementById("shareBox").value = "";
+    toast(`「${a.name}」を読み込みました`);
+  });
+
+  renderAll();
+</script>

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>工房 · じぶんアプリ工房</title>
+<meta name="description" content="型をえらんで、名前と中身を書きかえる。できたアプリはリンクひとつで渡せる。">
+<meta name="theme-color" content="#f57f31">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Maru+Gothic:wght@700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="page">
+
+<header class="nav">
+  <div class="inner">
+    <a class="logo" href="./" aria-label="じぶんアプリ工房 トップへ">
+      <svg class="logo-svg" viewBox="0 0 120 120" aria-hidden="true"><circle class="ray" cx="60" cy="60" r="55" stroke-width="7" stroke-dasharray="2 8.36"/><circle class="base" cx="60" cy="60" r="47"/><path d="M51 40l9-8 9 8v9H51z" fill="var(--logo-ink)"/><text x="60" y="66" text-anchor="middle" font-size="16">じぶん</text><text x="60" y="82" text-anchor="middle" font-size="14">アプリ工房</text><text class="since" x="60" y="95" text-anchor="middle">SINCE 2026</text></svg>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="./">トップページ</a>
+      <a href="./#how">使い方</a>
+      <a href="./#gallery">作品例</a>
+      <a href="make.html" aria-current="page">工房</a>
+    </nav>
+    <span class="autosave" id="autosave">自動で保存されます</span>
+    <button class="menu" id="menuBtn" aria-label="メニュー" aria-expanded="false" aria-controls="navLinks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+
+<main class="wrap kobo">
+  <div class="kobo-side">
+    <section class="card" style="display:grid;gap:12px">
+      <div class="kobo-top">
+        <h3>じぶんのアプリ</h3>
+        <span class="small muted">この端末の中だけに保存</span>
+      </div>
+      <div class="myapps" id="myapps"></div>
+    </section>
+
+    <section class="card" style="display:grid;gap:22px">
+      <div class="stepper" id="stepper" aria-label="手順">
+        <button data-step="1"><i></i><b>1. 型をえらぶ</b><span id="st1"></span></button>
+        <button data-step="2"><i></i><b>2. 書きかえる</b><span id="st2"></span></button>
+        <button data-step="3"><i></i><b>3. できあがり</b><span>リンクで渡す</span></button>
+      </div>
+
+      <div class="pane" id="pane1">
+        <div class="pane-head">
+          <span class="pt-num">Point 01</span>
+          <h2>どんなアプリにしますか?</h2>
+          <p>作りたいものに近い型をえらびます。あとから変えられます。</p>
+        </div>
+        <div class="tgrid" id="tgrid"></div>
+        <div class="pane-nav">
+          <span></span>
+          <button class="btn" id="to2">次へ: 書きかえる</button>
+        </div>
+      </div>
+
+      <div class="pane" id="pane2" hidden>
+        <div class="pane-head">
+          <span class="pt-num">Point 02</span>
+          <h2>名前と中身を書きかえる</h2>
+          <p>書いたそばから、右のスマホ画面で動きます。</p>
+        </div>
+        <div class="form" id="form"></div>
+        <div class="pane-nav">
+          <button class="btn ghost" id="back1">戻る</button>
+          <button class="btn" id="to3">次へ: できあがり</button>
+        </div>
+      </div>
+
+      <div class="pane" id="pane3" hidden>
+        <div class="pane-head">
+          <span class="pt-num">Point 03</span>
+          <h2>できあがり</h2>
+          <p>そのまま使えます。人に渡すならリンク、持ち出すならファイルで。</p>
+        </div>
+        <div class="inline-phone"><div class="blob"></div><div class="phone"><div class="screen"><div id="pv3" class="app-root"></div></div></div></div>
+        <div class="share-grid">
+          <div class="share-item">
+            <h3>リンクで渡す</h3>
+            <p>開いた人はそのまま使えます。スマホなら「ホーム画面に追加」でアプリのように置けます。</p>
+            <div class="linkbox"><input type="text" id="linkUrl" readonly aria-label="アプリのリンク"><button class="btn sm" id="copyLink">コピー</button></div>
+            <a class="btn sm ghost" id="openLink" href="#" target="_blank" rel="noopener">新しいタブで開く</a>
+          </div>
+          <div class="share-item">
+            <h3>ファイルで持ち出す</h3>
+            <p>このサイトがなくても単体で動く HTML を保存します。メールや AirDrop で渡せます。</p>
+            <button class="btn sm" id="saveHtml">HTML を保存</button>
+          </div>
+          <div class="share-item">
+            <h3>共有コード</h3>
+            <p>リンクが長くて困るときは、この文字列でも渡せます。工房の「読み込む」に貼ると同じアプリになります。</p>
+            <div class="linkbox"><input type="text" id="codeText" readonly aria-label="共有コード"><button class="btn sm ghost" id="copyCode">コピー</button></div>
+          </div>
+          <div class="share-item">
+            <h3>読み込む</h3>
+            <p>もらった共有コード(JA1. で始まる)を貼ってください。</p>
+            <div class="linkbox"><input type="text" id="importText" placeholder="JA1.…" aria-label="共有コードを貼る"><button class="btn sm ghost" id="importBtn">読み込む</button></div>
+          </div>
+        </div>
+        <div class="danger-zone">
+          <p>このアプリを複製して別のものを作る・この端末から消す</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn sm ghost" id="dup">複製</button>
+            <button class="btn sm danger" id="del">消す</button>
+          </div>
+        </div>
+        <div class="pane-nav">
+          <button class="btn ghost" id="back2">戻って直す</button>
+          <button class="btn" id="newFrom3">もうひとつ作る</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <aside class="kobo-preview">
+    <div class="blob"></div>
+    <div class="phone"><div class="screen"><div id="pv" class="app-root"></div></div></div>
+    <p class="cap">本物が動いています。触って確かめられます。</p>
+  </aside>
+</main>
+
+<button class="btn fab" id="fab">できあがりを見る</button>
+<div class="mobile-bar" id="mbar">
+  <button class="btn ghost" id="mBack">戻る</button>
+  <button class="btn" id="mNext">次へ</button>
+</div>
+<div class="sheet" id="sheet">
+  <div class="dim" id="sheetDim"></div>
+  <div class="body">
+    <div class="grip"></div>
+    <div class="phone"><div class="screen"><div id="pv2" class="app-root"></div></div></div>
+    <button class="btn ghost sm" id="sheetClose">閉じて続きを書く</button>
+  </div>
+</div>
+
+<script src="runtime.js"></script>
+<script src="templates.js"></script>
+<script src="nav.js"></script>
+<script src="kobo.js"></script>
+</body>
+</html>
