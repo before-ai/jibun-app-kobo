@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" id="appTitle" content="じぶんアプリ">
+<link rel="apple-touch-icon" id="touchIcon" href="">
+<link rel="icon" id="favIcon" href="">
 <title>じぶんアプリ</title>
 <meta name="description" content="じぶんアプリ工房で作られたアプリ">
 <meta name="theme-color" id="themeColor" content="#f57f31">
@@ -19,9 +23,22 @@
     <a class="vname" href="./">じぶんアプリ工房</a>
     <span class="spacer"></span>
     <span id="hint" class="small muted">記録はこの端末の中だけに残ります</span>
+    <button class="btn sm" id="homeBtn" type="button">ホーム画面に置く</button>
     <a class="btn sm ghost" id="remix" href="make.html">まねして作る</a>
   </div>
   <div class="viewer-stage" id="stage"><div id="app" class="app-root"></div></div>
+</div>
+<div class="sheet" id="homeSheet" aria-hidden="true">
+  <div class="dim" data-close></div>
+  <div class="body home-sheet" role="dialog" aria-modal="true" aria-labelledby="homeTitle">
+    <div class="grip"></div>
+    <img class="home-icon" id="homeIcon" alt="" width="84" height="84">
+    <h2 id="homeTitle">ホーム画面に置く</h2>
+    <p class="small muted" id="homeLead"></p>
+    <div id="homeSteps" class="home-steps"></div>
+    <p class="small muted">ホーム画面から開くと、記録はそのアイコンの中に別で残ります(いまブラウザで付けた記録は引き継がれません)。</p>
+    <button class="btn ghost" type="button" data-close>とじる</button>
+  </div>
 </div>
 <script src="runtime.js"></script>
 <script src="templates.js"></script>

@@ -34,6 +34,7 @@ artifact.html        旧版(claude.ai アーティファクト用の1ファイ�
 - **共有コード** = `JA1.` + アプリ設定 JSON の base64(URL 安全版)。`app.html#JA1...` がそのままアプリのリンクになる。`#` の中身はサーバーに送られない。
 - **保存先は端末内だけ**。工房の一覧は `localStorage` の `jibun-app-kobo:v1`、各アプリの記録は `jibun-app:<id>`(アプリページはリンクの文字列から鍵を作るので、同じリンクなら同じ記録が続く)。
 - **アカウント・サーバー・ユーザー投稿なし**。「作品例」はいまは見本の固定データ(`templates.js` の `GALLERY`)。みんなの作品ギャラリーは次の段階。
+- **ホーム画面に置く**(2026-11-23): アプリページがアプリごとのアイコン(色の地+名前の1文字、canvas で生成)と名前を `apple-touch-icon` / `apple-mobile-web-app-title` に入れる。ホーム画面から開いたとき(standalone)はサイトの帯を隠してアプリだけにする。ホーム画面側の記録はブラウザ側と別になる(iOS の仕様)。実機の iPhone / Android では未確認。
 - 型を増やすときは `runtime.js` の `views` と `templates.js` の `TEMPLATES` の両方に足す。
 
 ## データ源
