@@ -22,7 +22,7 @@
     <nav class="nav-links" id="navLinks">
       <a href="./">トップページ</a>
       <a href="./#how">使い方</a>
-      <a href="./#gallery">作品例</a>
+      <a href="gallery.html">ギャラリー</a>
       <a href="make.html" aria-current="page">工房</a>
     </nav>
     <span class="autosave" id="autosave">自動で保存されます</span>
@@ -101,6 +101,20 @@
             <h3>読み込む</h3>
             <p>もらった共有コード(JA1. で始まる)を貼ってください。</p>
             <div class="linkbox"><input type="text" id="importText" placeholder="JA1.…" aria-label="共有コードを貼る"><button class="btn sm ghost" id="importBtn">読み込む</button></div>
+          </div>
+          <div class="share-item wide" id="applyBox">
+            <h3>ギャラリーに載せる</h3>
+            <p>申し込み文を作って運営に送ります(このサイトを教えてくれた人に LINE などで)。運営が中身を確認してから載せます。</p>
+            <div class="apply-fields">
+              <label class="field"><span>ペンネーム<span class="hint">本名は書かないで</span></span><input type="text" id="applyBy" maxlength="20" placeholder="例: 釣り好きのカズ"></label>
+              <label class="field"><span>ひとこと<span class="hint">なくてもOK</span></span><input type="text" id="applyNote" maxlength="60" placeholder="例: 港に着いてから忘れ物に気づくので作りました"></label>
+            </div>
+            <label class="apply-check"><input type="checkbox" id="applyOk"><span>名前・電話番号・住所など個人の情報は入っていません。このアプリが公開されることに同意します。</span></label>
+            <button class="btn sm" id="applyBtn" type="button">申し込み文を作る</button>
+            <div id="applyResult" class="apply-result" hidden>
+              <textarea id="applyText" rows="6" readonly aria-label="申し込み文"></textarea>
+              <div class="apply-acts"><button class="btn sm" id="applyCopy" type="button">コピー</button><button class="btn sm ghost" id="applyShare" type="button" hidden>LINE などで送る</button></div>
+            </div>
           </div>
         </div>
         <div class="danger-zone">

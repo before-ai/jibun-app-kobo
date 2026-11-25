@@ -130,6 +130,7 @@
     $("linkUrl").value = url;
     $("openLink").href = url;
     $("codeText").value = encode(cur);
+    $("applyResult").hidden = true; // 中身が変わったら作り直してもらう
   }
 
   // ---- プレビュー(見えている枠にだけ描く) ----
@@ -169,6 +170,22 @@
     state.apps.push(a); state.currentId = a.id; store.save(state); $("importText").value = "";
     go(2); toast(`「${a.name}」を読み込みました`);
   };
+  $("applyBtn").onclick = () => {
+    if (!$("applyOk").checked) { toast("確認のチェックを入れてください"); $("applyOk").focus(); return; }
+    const cur = current();
+    const line = (s) => s.replace(/\s+/g, " ").trim();
+    $("applyText").value = [
+      "【じぶんアプリ工房 掲載申し込み】",
+      `アプリ: ${line(cur.name || "(名前なし)")}`,
+      `作者: ${line($("applyBy").value) || "名無し"}`,
+      `ひとこと: ${line($("applyNote").value)}`,
+      `リンク: ${appUrl(cur)}`,
+    ].join("\n");
+    $("applyResult").hidden = false;
+    $("applyShare").hidden = !navigator.share;
+  };
+  $("applyCopy").onclick = async () => { if (!(await copyText($("applyText").value, "申し込み文"))) { $("applyText").focus(); $("applyText").select(); } };
+  $("applyShare").onclick = async () => { try { await navigator.share({ text: $("applyText").value }); } catch (e) { if (e.name !== "AbortError") toast("送れませんでした。コピーして送ってください"); } };
   $("dup").onclick = () => {
     const cur = current();
     const a = { ...cur, id: window.Jibun.uid(), name: `${cur.name} のコピー`, fields: { ...cur.fields }, created: window.Jibun.today() };

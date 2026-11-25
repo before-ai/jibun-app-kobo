@@ -17,6 +17,10 @@ python3 -m http.server 8810 --directory docs
 
 ```
 docs/index.html      トップ(コンセプト・3ステップ・型・作品例・これから)
+docs/gallery.html    ギャラリー(みんなの作品+見本、型と言葉で絞り込み)
+docs/gallery-data.js 掲載する作品の一覧(tools/gallery.mjs で編集)
+docs/gallery.js      ギャラリーの動き
+tools/gallery.mjs    作品の追加・一覧・取り下げ(運営用、公開されない)
 docs/make.html       工房(1 型をえらぶ → 2 書きかえる → 3 できあがり)
 docs/app.html        アプリページ(リンクの # に入った共有コードからアプリを組み立てる)
 docs/runtime.js      できあがったアプリの本体(runApp)。書き出す単体 HTML にもそのまま入る
@@ -33,8 +37,17 @@ artifact.html        旧版(claude.ai アーティファクト用の1ファイ�
 
 - **共有コード** = `JA1.` + アプリ設定 JSON の base64(URL 安全版)。`app.html#JA1...` がそのままアプリのリンクになる。`#` の中身はサーバーに送られない。
 - **保存先は端末内だけ**。工房の一覧は `localStorage` の `jibun-app-kobo:v1`、各アプリの記録は `jibun-app:<id>`(アプリページはリンクの文字列から鍵を作るので、同じリンクなら同じ記録が続く)。
-- **アカウント・サーバー・ユーザー投稿なし**。「作品例」はいまは見本の固定データ(`templates.js` の `GALLERY`)。みんなの作品ギャラリーは次の段階。
+- **アカウント・サーバー・ユーザー投稿なし**。見本は `templates.js` の `GALLERY`。
 - **ホーム画面に置く**(2026-11-23): アプリページがアプリごとのアイコン(色の地+名前の1文字、canvas で生成)と名前を `apple-touch-icon` / `apple-mobile-web-app-title` に入れる。ホーム画面から開いたとき(standalone)はサイトの帯を隠してアプリだけにする。ホーム画面側の記録はブラウザ側と別になる(iOS の仕様)。実機の iPhone / Android では未確認。
+- **ギャラリー**(2026-11-23): 投稿 DB なしの手動掲載。作者が工房の「ギャラリーに載せる」で申し込み文を作り、運営に送る → 運営が中身を読んで追加 → 公開。
+
+  ```bash
+  node tools/gallery.mjs add "<申し込み文>"        # 中身の表示と機械チェックだけ
+  node tools/gallery.mjs add "<申し込み文>" --yes  # 書き込む
+  node tools/gallery.mjs remove <id>              # 取り下げ
+  ```
+
+  電話番号・メール・外部リンク・郵便番号・検問は機械で止める(誤検知なら `--force`)。属性いじりなどは機械で分からないので、表示された中身を人が読む。
 - 型を増やすときは `runtime.js` の `views` と `templates.js` の `TEMPLATES` の両方に足す。
 
 ## データ源

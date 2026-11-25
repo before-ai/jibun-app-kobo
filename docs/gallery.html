@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ギャラリー · じぶんアプリ工房</title>
+<meta name="description" content="みんなが作ったアプリを開いて使える。「まねして作る」で自分仕様に書きかえられる。">
+<meta property="og:title" content="じぶんアプリ工房">
+<meta property="og:description" content="型をえらんで書きかえるだけ。自分だけのアプリがその場で動き、リンクひとつで人に渡せる。">
+<meta name="theme-color" content="#f57f31">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Maru+Gothic:wght@700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="page">
+
+<header class="nav">
+  <div class="inner">
+    <a class="logo" href="./" aria-label="じぶんアプリ工房 トップへ">
+      <svg class="logo-svg" viewBox="0 0 120 120" aria-hidden="true"><circle class="ray" cx="60" cy="60" r="55" stroke-width="7" stroke-dasharray="2 8.36"/><circle class="base" cx="60" cy="60" r="47"/><path d="M51 40l9-8 9 8v9H51z" fill="var(--logo-ink)"/><text x="60" y="66" text-anchor="middle" font-size="16">じぶん</text><text x="60" y="82" text-anchor="middle" font-size="14">アプリ工房</text><text class="since" x="60" y="95" text-anchor="middle">SINCE 2026</text></svg>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="./">トップページ</a>
+      <a href="./#how">使い方</a>
+      <a href="gallery.html" aria-current="page">ギャラリー</a>
+      <a href="make.html">工房</a>
+      <a class="btn sm" href="make.html">作ってみる</a>
+    </nav>
+    <a class="btn dark sm" href="make.html">無料で作ってみる</a>
+    <button class="menu" id="menuBtn" aria-label="メニュー" aria-expanded="false" aria-controls="navLinks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+
+<main class="wrap gallery-page">
+  <div class="section-head center gallery-head">
+    <span class="eyebrow">ギャラリー</span>
+    <h1>みんなのアプリを、<br><em>自分仕様に</em></h1>
+    <p>開けばそのまま使えます。「まねして作る」を押すと手元にコピーされ、好きに書きかえられます。元のアプリは変わりません。</p>
+  </div>
+
+  <div class="gallery-tools">
+    <input type="search" id="search" placeholder="名前や中身でさがす(例: 釣り)" aria-label="アプリをさがす">
+    <div class="seg" id="typeSeg" role="group" aria-label="型で絞り込む"></div>
+    <button class="btn sm ghost" id="clearFilter" type="button" hidden>絞り込みを解除</button>
+  </div>
+
+  <section class="gallery-block" aria-labelledby="peopleTitle">
+    <div class="gallery-title"><h2 id="peopleTitle">みんなの作品</h2><span class="chip" id="peopleCount"></span></div>
+    <div class="grid grid-4" id="peopleGrid"></div>
+    <div class="gallery-empty" id="peopleEmpty" hidden>
+      <p id="peopleEmptyText"></p>
+      <a class="btn sm" href="make.html">アプリを作って申し込む</a>
+    </div>
+  </section>
+
+  <section class="gallery-block" aria-labelledby="sampleTitle">
+    <div class="gallery-title"><h2 id="sampleTitle">見本</h2><span class="chip" id="sampleCount"></span></div>
+    <div class="grid grid-4" id="sampleGrid"></div>
+    <p class="gallery-empty" id="sampleEmpty" hidden>この条件に合う見本はありません。</p>
+  </section>
+
+  <section class="card gallery-how">
+    <h2>あなたのアプリも載せられます</h2>
+    <ol>
+      <li>工房でアプリを作り、「3. できあがり」まで進む</li>
+      <li>「ギャラリーに載せる」で申し込み文を作る</li>
+      <li>申し込み文を運営に送る(このサイトを教えてくれた人に LINE などで)</li>
+      <li>運営が中身を確認して載せます。取り下げも同じ連絡先へ</li>
+    </ol>
+    <a class="btn" href="make.html">工房をひらく</a>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="flogo"><svg class="logo-svg inv" viewBox="0 0 120 120" aria-hidden="true"><circle class="ray" cx="60" cy="60" r="55" stroke-width="7" stroke-dasharray="2 8.36"/><circle class="base" cx="60" cy="60" r="47"/><path d="M51 40l9-8 9 8v9H51z" fill="var(--logo-ink)"/><text x="60" y="66" text-anchor="middle" font-size="16">じぶん</text><text x="60" y="82" text-anchor="middle" font-size="14">アプリ工房</text><text class="since" x="60" y="95" text-anchor="middle">SINCE 2026</text></svg></div>
+    <nav class="foot-links">
+      <a href="./">トップページ</a>
+      <a href="./#how">使い方</a>
+      <a href="gallery.html">ギャラリー</a>
+      <a href="./#faq">よくあるご質問</a>
+      <a href="make.html">工房</a>
+    </nav>
+    <p class="note">アカウント・サーバー・個人情報なし。作ったアプリの中身はリンクの中に全部入っていて、このサイトには送られません。</p>
+    <p class="copy">じぶんアプリ工房</p>
+  </div>
+</footer>
+
+<script src="runtime.js"></script>
+<script src="templates.js"></script>
+<script src="gallery-data.js"></script>
+<script src="nav.js"></script>
+<script src="gallery.js"></script>
+</body>
+</html>
